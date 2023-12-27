@@ -42,6 +42,18 @@ def is_prior(op1: str, op2) -> bool:
     :return: true is op1 is prior to op2, else otherwise
     """
     if is_operator(op1) and is_operator(op2):
-        return operators[op1] > operators[op2]
-    print("some of the given values are not operators")
+        return operators[op1] >= operators[op2]
+    return False
 
+
+def is_float(string):
+    """
+    checks if a given string is float, returns ture if it is, else returns false. in case of error false is returned
+    :param string:
+    :return: bool, true -> float, false not float or int
+    """
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False

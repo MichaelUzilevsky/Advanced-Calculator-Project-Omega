@@ -1,4 +1,4 @@
-from operators import is_operator, is_prior
+from operators import is_operator, is_prior, is_float
 
 
 def to_postfix(infix: list[str]) -> list[str]:
@@ -11,7 +11,7 @@ def to_postfix(infix: list[str]) -> list[str]:
     postfix: list[str] = []
     operators_stack: list[str] = []
     for item in infix:
-        if item.isdigit():
+        if is_float(item):
             postfix.append(item)
 
         elif item == '(':
@@ -40,6 +40,6 @@ def to_postfix(infix: list[str]) -> list[str]:
 
 
 if __name__ == '__main__':
-    print(to_postfix(["(", "2", "+", "3", "!", ")", "*", "4"]))  # result ['2', '3', '!', '+', '4', '*']
+    print(to_postfix(["(", "2.5", "+", "3", "!", ")", "*", "4"]))  # result ['2', '3', '!', '+', '4', '*']
 
 
