@@ -42,7 +42,7 @@ class Parser:
                     operators_stack.append(item)
 
                 else:
-                    while operators_stack and self.get_priority(operators_stack[-1]) > self.get_priority(item):
+                    while operators_stack and self.get_priority(operators_stack[-1]) >= self.get_priority(item):
                         postfix.append(operators_stack.pop())
 
                     operators_stack.append(item)

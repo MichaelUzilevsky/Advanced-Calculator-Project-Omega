@@ -11,6 +11,7 @@ from operations.binary_operations.SubOperation import SubOperation
 from operations.unary_operations.FactorialOperation import FactorialOperation
 from operations.unary_operations.NegOperation import NegOperation
 from parser import Parser
+from validator import Validator
 
 
 def main():
@@ -32,6 +33,14 @@ operations = {
 }
 
 if __name__ == '__main__':
-    evaluator = Evaluator()
+    validator = Validator(operations)
     parser = Parser(operations)
-    print(evaluator.evaluate(parser.to_postfix(["~", "(", "2.5", "+", "3", "!", ")", "*", "4"])))
+    evaluator = Evaluator()
+    input_str = "3 @ 4 @ 5"
+    input_lst = validator.validate(input_str)
+    postfix_lst = parser.to_postfix(input_lst)
+    result = evaluator.evaluate(postfix_lst)
+    print(result)
+
+
+
