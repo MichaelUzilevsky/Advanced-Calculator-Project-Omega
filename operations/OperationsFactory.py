@@ -7,47 +7,29 @@ from operations.binary_operations.ModOperation import ModOperation
 from operations.binary_operations.MultOperation import MultOperation
 from operations.binary_operations.PowOperation import PowOperation
 from operations.binary_operations.SubOperation import SubOperation
-from operations.unary_operations.FactorialOperation import FactorialOperation
-from operations.unary_operations.NegOperation import NegOperation
+from operations.unary_operations.left_direction_of_operation.UnaryMinusOperation import UnaryMinusOperation
+from operations.unary_operations.right_direction_of_operation.FactorialOperation import FactorialOperation
+from operations.unary_operations.left_direction_of_operation.NegOperation import NegOperation
 
 
 class OperationsFactory:
+    operations = {
+        '+': AddOperation(),
+        '-': SubOperation(),
+        '*': MultOperation(),
+        '/': DivOperation(),
+        '^': PowOperation(),
+        '_': UnaryMinusOperation(),
+        '%': ModOperation(),
+        '@': AvgOperation(),
+        '$': MaxOperation(),
+        '&': MinOperation(),
+        '~': NegOperation(),
+        '!': FactorialOperation(),
+    }
+
     def get_operation(self, operator: str):
-        if operator in {"+", "-", "*", "/", "^", "%", "@", "$", "&"}:
-            return self._create_binary_operation(operator)
-        elif operator in {"~", "!"}:
-            return self._create_unary_operation(operator)
+        if operator in self.operations.keys():
+            return self.operations.get(operator)
         else:
             raise ValueError(f"Unknown operator: {operator}")
-
-    def _create_binary_operation(self, operator: str):
-        match operator:
-            case '+':
-                return AddOperation()
-            case '-':
-                return SubOperation()
-            case '*':
-                return MultOperation()
-            case '/':
-                return DivOperation()
-            case '^':
-                return PowOperation()
-            case '%':
-                return ModOperation()
-            case '@':
-                return AvgOperation()
-            case '$':
-                return MaxOperation()
-            case '&':
-                return MinOperation()
-            case _:
-                raise ValueError(f"Unknown binary operator: {operator}")
-
-    def _create_unary_operation(self, operator: str):
-        match operator:
-            case '~':
-                return NegOperation()
-            case '!':
-                return FactorialOperation()
-            case _:
-                raise ValueError(f"Unknown unary operator: {operator}")

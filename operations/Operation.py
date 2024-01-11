@@ -1,4 +1,4 @@
-class IOperation:
+class Operation:
     def priority(self) -> int:
         pass
 

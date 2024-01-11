@@ -1,7 +1,7 @@
-from operations.unary_operations.UnaryOperation import UnaryOperation
+from operations.unary_operations.right_direction_of_operation.RightUnaryOperation import RightUnaryOperation
 
 
-class FactorialOperation(UnaryOperation):
+class FactorialOperation(RightUnaryOperation):
     def priority(self) -> int:
         return 6
 
@@ -20,4 +20,7 @@ class FactorialOperation(UnaryOperation):
         for i in range(1, int(operand) + 1):
             result *= i
         return result
+
+
+
 

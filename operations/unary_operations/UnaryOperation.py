@@ -1,9 +1,10 @@
-from operations.IOperation import IOperation
+from operations.Operation import Operation
 
 
-class UnaryOperation(IOperation):
+class UnaryOperation(Operation):
     def priority(self) -> int:
         pass
 
     def perform(self, operand: float) -> float:
         pass
+

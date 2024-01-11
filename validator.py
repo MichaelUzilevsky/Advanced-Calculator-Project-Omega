@@ -1,5 +1,7 @@
 from operations.binary_operations.BinaryOperation import BinaryOperation
 from operations.unary_operations.UnaryOperation import UnaryOperation
+from operations.unary_operations.left_direction_of_operation.LeftUnaryOperations import LeftUnaryOperation
+from operations.unary_operations.right_direction_of_operation.RightUnaryOperation import RightUnaryOperation
 from utills.utills_methods import is_float
 
 
@@ -8,7 +10,7 @@ class Validator:
         self.operations = operations  # A dictionary of operator and their symbols
 
     def _is_valid_character(self, ch: str) -> bool:
-        return is_float(ch) or ch in self.operations or ch in ".()"
+        return is_float(ch) or self._is_operator(ch) or self._is_parentheses(ch) or ch == "."
 
     def _validate_parentheses(self, expression: str) -> bool:
         stack = []
@@ -26,23 +28,35 @@ class Validator:
     def _is_operator(self, item):
         return item in self.operations
 
+    def _is_open_parentheses(self, item: str) -> bool:
+        return item == "("
+
+    def _is_close_parentheses(self, item: str) -> bool:
+        return item == ")"
+
+    def _is_parentheses(self, item: str) -> bool:
+        return self._is_open_parentheses(item) or self._is_close_parentheses(item)
+
     def _extract_numbers(self, input_str: str) -> list[str]:
         extracted_input: list[str] = []
         temp_num: str = ""
         for ch in input_str:
-            if ch in " ":
+            if ch in " \t":
                 continue
+
             if not self._is_valid_character(ch):
                 raise SyntaxError(f"Invalid Character {ch}")
-            if self._is_operator(ch) or ch in "()":
 
-                if ch == "(" and temp_num != "":
-                    raise SyntaxError(f"Invalid Expression {temp_num} ( ... ,"
+            if self._is_operator(ch) or self._is_parentheses(ch):
+
+                if self._is_open_parentheses(ch) and temp_num != "":
+                    raise SyntaxError(f"Invalid Expression {temp_num}(,\n"
                                       f"operation is needed between the {temp_num} and ( ")
 
-                if (ch == ")" and temp_num == "" and
-                        ((input_str.index(ch) - 1) > 0 and input_str[input_str.index(ch)] != ")")):
-                    raise SyntaxError(f"Invalid Position of )")
+                if (self._is_close_parentheses(ch) and temp_num == "" and
+                        ((input_str.index(ch) - 1) > 0 and
+                         (not self._is_close_parentheses(input_str[input_str.index(ch) - 1])))):
+                    raise SyntaxError(f"Invalid Position of ) at index {input_str.index(ch)}")
 
                 if temp_num != "":
                     if is_float(temp_num):
@@ -61,7 +75,7 @@ class Validator:
 
     def _minus_streak(self, input_list: list[str], position: int) -> int:
         counter: int = 0
-        while input_list[position] == "-":
+        while self._is_minus_operation(input_list[position]) and self._is_legal_unary_minus(position, input_list):
             counter += 1
             position += 1
         return counter
@@ -69,41 +83,68 @@ class Validator:
     def _get_correct_operation(self, count: int) -> str:
         return "-" if count % 2 == 1 else "+"
 
+    def _is_binary_minus(self, index: int, input_list: list[str]) -> bool:
+        return index > 0 and (is_float(input_list[index - 1]) or
+                              self._is_right_unary_operator(input_list[index]) or
+                              self._is_open_parentheses(input_list[index]))
+
+    def _is_legal_unary_minus(self, index: int, input_list: list[str]):
+        if index == len(input_list) - 1:
+            raise SyntaxError(f"Invalid Position of {input_list[index]} in index {index}")
+
+        if (not self._is_open_parentheses(input_list[index + 1]) and
+                not is_float(input_list[index + 1]) and
+                not self._is_minus_operation(input_list[index + 1])):
+            raise SyntaxError(f"Invalid position of {input_list[index + 1]} after the minus in index {index}")
+
+        return True
+
     def _handle_minuses(self, input_list: list[str]) -> list[str]:
         minus_handled: list[str] = []
         i = 0
         while i < len(input_list):
-            if input_list[i] != "-":
+            if not self._is_minus_operation(input_list[i]):
                 minus_handled += [input_list[i]]
                 i += 1
                 continue
-            # keep the operator, not adding the operator to the number
-            m_streak: int = self._minus_streak(input_list, i)
-            correct_operation: str = self._get_correct_operation(m_streak)
-            # add the minus to the number
-            if i == 0 or self._is_binary_operator(input_list[i - 1]) or input_list[i - 1] in "~(":
 
-                if not is_float(input_list[i + m_streak]) and (not input_list[i + m_streak] == "("):
+            # binary minus
+            if self._is_binary_minus(i, input_list):
+                minus_handled += input_list[i]
+                i += 1
+                continue
+
+            minus_streak: int = self._minus_streak(input_list, i)
+            correct_operation: str = self._get_correct_operation(minus_streak)
+
+            # add the unary operation
+            if i == 0:
+                if self._is_minus_operation(correct_operation):
+                    minus_handled += "_"
+                i += minus_streak
+                continue
+
+            # add the minus to the number -> unary minus
+            if (self._is_binary_operator(input_list[i - 1]) or
+                    self._is_left_unary_operator(input_list[i - 1]) or
+                    self._is_open_parentheses(input_list[i - 1])):
+
+                if not is_float(input_list[i + minus_streak]) and (not input_list[i + minus_streak] == "("):
                     raise SyntaxError(
-                        f"Invalid Position of {input_list[i + m_streak]} after the -\nin index {i + m_streak}")
+                        f"Invalid Position of {input_list[i + minus_streak]} after the -\nin index {i + minus_streak}")
 
-                if input_list[i + m_streak] == "(":
+                if input_list[i + minus_streak] == "(":
                     if correct_operation == "-":
                         minus_handled += "~"
 
                 else:
                     if correct_operation == "-":
-                        minus_handled += [-float(input_list[i + m_streak])]
+                        minus_handled += [-float(input_list[i + minus_streak])]
                     else:
-                        minus_handled += input_list[i + m_streak]
+                        minus_handled += input_list[i + minus_streak]
                     i += 1
 
-                i += m_streak
-
-            # minus is not part of the number
-            elif i > 0 and is_float(input_list[i - 1]) or input_list[i - 1] in ")!":
-                minus_handled += correct_operation
-                i += m_streak
+                i += minus_streak
 
         return minus_handled
 
@@ -112,6 +153,12 @@ class Validator:
 
     def _is_unary_operator(self, op: str) -> bool:
         return isinstance(self.operations.get(op, None), UnaryOperation)
+
+    def _is_right_unary_operator(self, op: str) -> bool:
+        return isinstance(self.operations.get(op, None), RightUnaryOperation)
+
+    def _is_left_unary_operator(self, op: str) -> bool:
+        return isinstance(self.operations.get(op, None), LeftUnaryOperation)
 
     def _is_minus_operation(self, op: str) -> bool:
         return op == "-"
@@ -139,18 +186,24 @@ class Validator:
                 if index == 0 or index == len(input_list) - 1:
                     return False, input_list[index], index
 
-                if (not is_float(input_list[index - 1])) and (not input_list[index - 1] in ")!"):
-                    return False, input_list[index], index
+                if (not is_float(input_list[index - 1])) and (not self._is_close_parentheses(input_list[index - 1]) and
+                                                              not self._is_right_unary_operator(input_list[index - 1])):
+                    return False, input_list[index - 1], index - 1
 
-                if (not is_float(input_list[index + 1])) and (not input_list[index + 1] in "(~-"):
-                    return False, input_list[index], index
+                if (not is_float(input_list[index + 1])) and (not self._is_open_parentheses(input_list[index + 1]) and
+                                                              not self._is_left_unary_operator(
+                                                                  input_list[index + 1]) and
+                                                              not self._is_minus_operation(input_list[index + 1])):
+                    return False, input_list[index + 1], index + 1
 
             elif self._is_minus_operation(input_list[index]):
                 if index == len(input_list) - 1:
                     return False, input_list[index], index
 
-                if (input_list[index + 1] not in "-(~") and (not is_float(input_list[index + 1])):
-                    return False, input_list[index], index
+                if (not is_float(input_list[index + 1] and (not self._is_minus_operation(input_list[index + 1]) and
+                                                            not self._is_open_parentheses(input_list[index + 1]) and
+                                                            not self._is_left_unary_operator(input_list[index + 1])))):
+                    return False, input_list[index + 1], index + 1
             index += 1
         return True, None, None
 
@@ -161,7 +214,7 @@ class Validator:
                 index += 1
                 continue
 
-            elif input_list[index] == "~":
+            elif self._is_left_unary_operator(input_list[index]):
                 if index == 0:
                     index += 1
                     continue
@@ -172,22 +225,24 @@ class Validator:
                 if not self._is_binary_operator(input_list[index - 1]):
                     return False, input_list[index], index
 
-                if (not input_list[index + 1] in "(-") and (not is_float(input_list[index + 1])):
-                    return False, input_list[index], index
+                if (not is_float(input_list[index + 1]) and (not self._is_open_parentheses(input_list[index + 1]) and
+                                                             not self._is_minus_operation(input_list[index + 1]))):
+                    return False, input_list[index + 1], index + 1
 
-            elif input_list[index] == "!":
+            elif self._is_right_unary_operator(input_list[index]):
                 if index == len(input_list) - 1:
                     index += 1
                     continue
 
                 if index == 0:
-                    return False
-
-                if (input_list[index - 1] not in ")") and (not is_float(input_list[index - 1])):
                     return False, input_list[index], index
 
-                if (input_list[index + 1] not in "!") and (not self._is_binary_operator(input_list[index + 1])):
-                    return False, input_list[index], index
+                if not is_float(input_list[index - 1]) and not (self._is_close_parentheses(input_list[index - 1])):
+                    return False, input_list[index - 1], index - 1
+
+                if (self._is_right_unary_operator(input_list[index + 1]) and
+                        (not self._is_binary_operator(input_list[index + 1]))):
+                    return False, input_list[index + 1], index + 1
 
             index += 1
 

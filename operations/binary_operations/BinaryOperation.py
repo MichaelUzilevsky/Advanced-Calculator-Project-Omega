@@ -1,7 +1,7 @@
-from operations.IOperation import IOperation
+from operations.Operation import Operation
 
 
-class BinaryOperation(IOperation):
+class BinaryOperation(Operation):
     def priority(self) -> int:
         pass
 
