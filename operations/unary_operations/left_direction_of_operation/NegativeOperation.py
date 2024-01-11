@@ -1,7 +1,7 @@
 from operations.unary_operations.left_direction_of_operation.LeftUnaryOperations import LeftUnaryOperation
 
 
-class NegOperation(LeftUnaryOperation):
+class NegativeOperation(LeftUnaryOperation):
 
     def priority(self) -> int:
         return 6

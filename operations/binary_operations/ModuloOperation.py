@@ -1,9 +1,9 @@
 from operations.binary_operations.BinaryOperation import BinaryOperation
 
 
-class MinOperation(BinaryOperation):
+class ModuloOperation(BinaryOperation):
     def priority(self) -> int:
-        return 5
+        return 4
 
     def perform(self, operand1: float, operand2: float) -> float:
-        return min(operand1, operand2)
+        return operand1 % operand2

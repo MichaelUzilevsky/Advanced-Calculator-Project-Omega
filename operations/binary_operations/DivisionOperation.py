@@ -1,7 +1,7 @@
 from operations.binary_operations.BinaryOperation import BinaryOperation
 
 
-class DivOperation(BinaryOperation):
+class DivisionOperation(BinaryOperation):
     def priority(self) -> int:
         return 2
 

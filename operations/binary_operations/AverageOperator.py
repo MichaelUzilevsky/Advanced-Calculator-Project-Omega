@@ -1,7 +1,7 @@
 from operations.binary_operations.BinaryOperation import BinaryOperation
 
 
-class AvgOperation(BinaryOperation):
+class AverageOperation(BinaryOperation):
     def priority(self) -> int:
         return 5
 

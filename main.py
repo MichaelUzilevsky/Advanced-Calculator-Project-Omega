@@ -15,7 +15,7 @@ def main():
 
             try:
                 result = calculator.calculate(user_input)
-                print(f"Result: {result}")
+                print(f"Result: {result}\n")
 
             except Exception as e:
                 print(f"Error: {e}")

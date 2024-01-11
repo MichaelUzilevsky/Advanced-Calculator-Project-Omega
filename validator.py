@@ -12,7 +12,8 @@ class Validator:
     def _is_valid_character(self, ch: str) -> bool:
         return is_float(ch) or self._is_operator(ch) or self._is_parentheses(ch) or ch == "."
 
-    def _validate_parentheses(self, expression: str) -> bool:
+    @staticmethod
+    def _validate_parentheses(expression: str) -> bool:
         stack = []
         for ch in expression:
             if ch == '(':
@@ -28,10 +29,12 @@ class Validator:
     def _is_operator(self, item):
         return item in self.operations
 
-    def _is_open_parentheses(self, item: str) -> bool:
+    @staticmethod
+    def _is_open_parentheses(item: str) -> bool:
         return item == "("
 
-    def _is_close_parentheses(self, item: str) -> bool:
+    @staticmethod
+    def _is_close_parentheses(item: str) -> bool:
         return item == ")"
 
     def _is_parentheses(self, item: str) -> bool:
@@ -80,7 +83,8 @@ class Validator:
             position += 1
         return counter
 
-    def _get_correct_operation(self, count: int) -> str:
+    @staticmethod
+    def _get_correct_operation(count: int) -> str:
         return "-" if count % 2 == 1 else "+"
 
     def _is_binary_minus(self, index: int, input_list: list[str]) -> bool:
@@ -160,10 +164,10 @@ class Validator:
     def _is_left_unary_operator(self, op: str) -> bool:
         return isinstance(self.operations.get(op, None), LeftUnaryOperation)
 
-    def _is_minus_operation(self, op: str) -> bool:
+    @staticmethod
+    def _is_minus_operation(op: str) -> bool:
         return op == "-"
 
-    # after minus handle
     def _validate_operators(self, input_list: list[str]) -> bool:
         num_count: int = 0
         binary_operators_count: int = 0
@@ -175,7 +179,6 @@ class Validator:
 
         return num_count == binary_operators_count + 1
 
-    # before minus handle
     def _validate_binary_operators(self, input_list: list[str]) -> (bool, str, int):
         index: int = 0
         while index < len(input_list):
@@ -240,7 +243,7 @@ class Validator:
                 if not is_float(input_list[index - 1]) and not (self._is_close_parentheses(input_list[index - 1])):
                     return False, input_list[index - 1], index - 1
 
-                if (self._is_right_unary_operator(input_list[index + 1]) and
+                if (not self._is_right_unary_operator(input_list[index + 1]) and
                         (not self._is_binary_operator(input_list[index + 1]))):
                     return False, input_list[index + 1], index + 1
 
