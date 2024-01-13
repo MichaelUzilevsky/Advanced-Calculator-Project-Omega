@@ -43,23 +43,25 @@ class Validator:
     def _extract_numbers(self, input_str: str) -> list[str]:
         extracted_input: list[str] = []
         temp_num: str = ""
-        for ch in input_str:
-            if ch in " \t":
+        index = 0
+        while index < len(input_str):
+            if input_str[index] in " \t":
+                index += 1
                 continue
 
-            if not self._is_valid_character(ch):
-                raise SyntaxError(f"Invalid Character {ch}")
+            if not self._is_valid_character(input_str[index]):
+                raise SyntaxError(f"Invalid Character {input_str[index]}")
 
-            if self._is_operator(ch) or self._is_parentheses(ch):
+            if self._is_operator(input_str[index]) or self._is_parentheses(input_str[index]):
 
-                if self._is_open_parentheses(ch) and temp_num != "":
+                if self._is_open_parentheses(input_str[index]) and temp_num != "":
                     raise SyntaxError(f"Invalid Expression {temp_num}(,\n"
                                       f"operation is needed between the {temp_num} and ( ")
 
-                if (self._is_close_parentheses(ch) and temp_num == "" and
-                        ((input_str.index(ch) - 1) > 0 and
-                         (not self._is_close_parentheses(input_str[input_str.index(ch) - 1])))):
-                    raise SyntaxError(f"Invalid Position of ) at index {input_str.index(ch)}")
+                if (self._is_close_parentheses(input_str[index]) and temp_num == "" and
+                        (not self._is_close_parentheses(input_str[index - 1])) and
+                        (not self._is_right_unary_operator(input_str[index - 1]))):
+                    raise SyntaxError(f"Invalid Position of ) at index {index}")
 
                 if temp_num != "":
                     if is_float(temp_num):
@@ -67,9 +69,11 @@ class Validator:
                     else:
                         raise SyntaxError(f"Invalid Expression {temp_num}")
                 temp_num = ""
-                extracted_input.append(ch)
+                extracted_input.append(input_str[index])
             else:  # number
-                temp_num += ch
+                temp_num += input_str[index]
+
+            index += 1
 
         if is_float(temp_num):
             extracted_input.append(temp_num)
@@ -88,9 +92,11 @@ class Validator:
         return "-" if count % 2 == 1 else "+"
 
     def _is_binary_minus(self, index: int, input_list: list[str]) -> bool:
-        return index > 0 and (is_float(input_list[index - 1]) or
-                              self._is_right_unary_operator(input_list[index]) or
-                              self._is_open_parentheses(input_list[index]))
+        if (index > 0 and (is_float(input_list[index - 1])
+                           or self._is_right_unary_operator(input_list[index - 1])
+                           or self._is_close_parentheses(input_list[index - 1]))):
+            return True
+        return False
 
     def _is_legal_unary_minus(self, index: int, input_list: list[str]):
         if index == len(input_list) - 1:
@@ -244,7 +250,8 @@ class Validator:
                     return False, input_list[index - 1], index - 1
 
                 if (not self._is_right_unary_operator(input_list[index + 1]) and
-                        (not self._is_binary_operator(input_list[index + 1]))):
+                        (not self._is_binary_operator(input_list[index + 1])) and
+                        (not self._is_close_parentheses(input_list[index + 1]))):
                     return False, input_list[index + 1], index + 1
 
             index += 1
@@ -256,6 +263,9 @@ class Validator:
             return []
 
         extracted_input: list[str] = self._extract_numbers(input_str)
+
+        if not extracted_input:
+            raise SyntaxError("Empty Expression")
 
         valid, item, index = self._validate_unary_operators(extracted_input)
         if not valid:
