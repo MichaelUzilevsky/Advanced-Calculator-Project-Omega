@@ -77,6 +77,8 @@ class Validator:
 
         if is_float(temp_num):
             extracted_input.append(temp_num)
+        else:
+            raise SyntaxError(f"Invalid Expression {temp_num}")
 
         return extracted_input
 
