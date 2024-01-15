@@ -1,14 +1,13 @@
 from calculator import Calculator
-from operations.Operation import Operation
-from operations.unary_operations.UnaryOperation import UnaryOperation
-from operations.unary_operations.left_direction_of_operation.UnaryMinusOperation import UnaryMinusOperation
 
 
 def main():
+    # create instance of the Calculator
     calculator = Calculator()
+    # this while runs while the input is not exit or keyboard interrupt occurred.
     try:
         while True:
-            user_input = input("Enter expression (or type 'exit' to quit):\n")
+            user_input = input("Enter expression, or type 'exit' to quit:\n")
 
             if user_input.lower() == 'exit':
                 break

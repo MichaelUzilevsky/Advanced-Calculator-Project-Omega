@@ -2,19 +2,34 @@ from operations.unary_operations.right_direction_of_operation.RightUnaryOperatio
 
 
 class SumDigitsOperation(RightUnaryOperation):
+    """
+    Represents the operation that sums the digits of a number in a calculator.
+    Extends RightUnaryOperation.
+    """
     def priority(self) -> int:
+        """
+        Returns the priority level of the sum digits operation.
+        """
         return 6
 
     @staticmethod
     def _remove_decimal_point(number: float) -> str:
-        # Convert the number to a string
+        """
+        Converts a float number to a string and removes the decimal point.
+        :param number: The number from which the decimal point is to be removed.
+        :return: A string representation of the number without the decimal point.
+        """
         number_str = str(number)
         # Remove the decimal point
         number_str = number_str.replace('.', '')
-        # Convert the string back to an integer
         return number_str
 
     def perform(self, operand: float) -> int:
+        """
+        Sums the digits of the given operand.
+        :param operand: The operand as a float.
+        :return: The sum of the digits of the operand.
+        """
         negative = 1
         if operand < 0:
             negative = -1

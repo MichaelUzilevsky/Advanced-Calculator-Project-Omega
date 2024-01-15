@@ -2,15 +2,16 @@ from operations.binary_operations.BinaryOperation import BinaryOperation
 from operations.unary_operations.UnaryOperation import UnaryOperation
 from operations.unary_operations.left_direction_of_operation.LeftUnaryOperations import LeftUnaryOperation
 from operations.unary_operations.right_direction_of_operation.RightUnaryOperation import RightUnaryOperation
-from utills.utills_methods import is_float
+from utills.utills_methods import is_float, is_open_parentheses, is_close_parentheses, is_parentheses, is_operator
 
 
 class Validator:
     def __init__(self, operations: dict):
         self.operations = operations  # A dictionary of operator and their symbols
 
-    def _is_valid_character(self, ch: str) -> bool:
-        return is_float(ch) or self._is_operator(ch) or self._is_parentheses(ch) or ch == "."
+    @staticmethod
+    def _is_valid_character(ch: str) -> bool:
+        return is_float(ch) or is_operator(ch) or is_parentheses(ch) or ch == "."
 
     @staticmethod
     def _validate_parentheses(expression: str) -> bool:
@@ -26,20 +27,6 @@ class Validator:
             raise SyntaxError("Mismatched parentheses (")
         return True
 
-    def _is_operator(self, item):
-        return item in self.operations
-
-    @staticmethod
-    def _is_open_parentheses(item: str) -> bool:
-        return item == "("
-
-    @staticmethod
-    def _is_close_parentheses(item: str) -> bool:
-        return item == ")"
-
-    def _is_parentheses(self, item: str) -> bool:
-        return self._is_open_parentheses(item) or self._is_close_parentheses(item)
-
     def _extract_numbers(self, input_str: str) -> list[str]:
         extracted_input: list[str] = []
         temp_num: str = ""
@@ -52,14 +39,14 @@ class Validator:
             if not self._is_valid_character(input_str[index]):
                 raise SyntaxError(f"Invalid Character {input_str[index]}")
 
-            if self._is_operator(input_str[index]) or self._is_parentheses(input_str[index]):
+            if is_operator(input_str[index]) or is_parentheses(input_str[index]):
 
-                if self._is_open_parentheses(input_str[index]) and temp_num != "":
+                if is_open_parentheses(input_str[index]) and temp_num != "":
                     raise SyntaxError(f"Invalid Expression {temp_num}(,\n"
                                       f"operation is needed between the {temp_num} and ( ")
 
-                if (self._is_close_parentheses(input_str[index]) and temp_num == "" and
-                        (not self._is_close_parentheses(input_str[index - 1])) and
+                if (is_close_parentheses(input_str[index]) and temp_num == "" and
+                        (not is_close_parentheses(input_str[index - 1])) and
                         (not self._is_right_unary_operator(input_str[index - 1]))):
                     raise SyntaxError(f"Invalid Position of ) at index {index}")
 
@@ -77,8 +64,6 @@ class Validator:
 
         if is_float(temp_num):
             extracted_input.append(temp_num)
-        else:
-            raise SyntaxError(f"Invalid Expression {temp_num}")
 
         return extracted_input
 
@@ -96,7 +81,7 @@ class Validator:
     def _is_binary_minus(self, index: int, input_list: list[str]) -> bool:
         if (index > 0 and (is_float(input_list[index - 1])
                            or self._is_right_unary_operator(input_list[index - 1])
-                           or self._is_close_parentheses(input_list[index - 1]))):
+                           or is_close_parentheses(input_list[index - 1]))):
             return True
         return False
 
@@ -104,7 +89,7 @@ class Validator:
         if index == len(input_list) - 1:
             raise SyntaxError(f"Invalid Position of {input_list[index]} in index {index}")
 
-        if (not self._is_open_parentheses(input_list[index + 1]) and
+        if (not is_open_parentheses(input_list[index + 1]) and
                 not is_float(input_list[index + 1]) and
                 not self._is_minus_operation(input_list[index + 1])):
             raise SyntaxError(f"Invalid position of {input_list[index + 1]} after the minus in index {index}")
@@ -130,7 +115,7 @@ class Validator:
             correct_operation: str = self._get_correct_operation(minus_streak)
 
             # add the unary operation
-            if i == 0:
+            if i == 0 or is_open_parentheses(input_list[i - 1]):
                 if self._is_minus_operation(correct_operation):
                     minus_handled += "_"
                 i += minus_streak
@@ -139,7 +124,7 @@ class Validator:
             # add the minus to the number -> unary minus
             if (self._is_binary_operator(input_list[i - 1]) or
                     self._is_left_unary_operator(input_list[i - 1]) or
-                    self._is_open_parentheses(input_list[i - 1])):
+                    is_open_parentheses(input_list[i - 1])):
 
                 if not is_float(input_list[i + minus_streak]) and (not input_list[i + minus_streak] == "("):
                     raise SyntaxError(
@@ -197,11 +182,11 @@ class Validator:
                 if index == 0 or index == len(input_list) - 1:
                     return False, input_list[index], index
 
-                if (not is_float(input_list[index - 1])) and (not self._is_close_parentheses(input_list[index - 1]) and
+                if (not is_float(input_list[index - 1])) and (not is_close_parentheses(input_list[index - 1]) and
                                                               not self._is_right_unary_operator(input_list[index - 1])):
                     return False, input_list[index - 1], index - 1
 
-                if (not is_float(input_list[index + 1])) and (not self._is_open_parentheses(input_list[index + 1]) and
+                if (not is_float(input_list[index + 1])) and (not is_open_parentheses(input_list[index + 1]) and
                                                               not self._is_left_unary_operator(
                                                                   input_list[index + 1]) and
                                                               not self._is_minus_operation(input_list[index + 1])):
@@ -212,7 +197,7 @@ class Validator:
                     return False, input_list[index], index
 
                 if (not is_float(input_list[index + 1] and (not self._is_minus_operation(input_list[index + 1]) and
-                                                            not self._is_open_parentheses(input_list[index + 1]) and
+                                                            not is_open_parentheses(input_list[index + 1]) and
                                                             not self._is_left_unary_operator(input_list[index + 1])))):
                     return False, input_list[index + 1], index + 1
             index += 1
@@ -236,7 +221,7 @@ class Validator:
                 if not self._is_binary_operator(input_list[index - 1]):
                     return False, input_list[index], index
 
-                if (not is_float(input_list[index + 1]) and (not self._is_open_parentheses(input_list[index + 1]) and
+                if (not is_float(input_list[index + 1]) and (not is_open_parentheses(input_list[index + 1]) and
                                                              not self._is_minus_operation(input_list[index + 1]))):
                     return False, input_list[index + 1], index + 1
 
@@ -248,12 +233,12 @@ class Validator:
                 if index == 0:
                     return False, input_list[index], index
 
-                if not is_float(input_list[index - 1]) and not (self._is_close_parentheses(input_list[index - 1])):
+                if not is_float(input_list[index - 1]) and not (is_close_parentheses(input_list[index - 1])):
                     return False, input_list[index - 1], index - 1
 
                 if (not self._is_right_unary_operator(input_list[index + 1]) and
                         (not self._is_binary_operator(input_list[index + 1])) and
-                        (not self._is_close_parentheses(input_list[index + 1]))):
+                        (not is_close_parentheses(input_list[index + 1]))):
                     return False, input_list[index + 1], index + 1
 
             index += 1

@@ -22,6 +22,13 @@ from calculator import Calculator
     ("4 * 2.5", 10),
     ("16 / 4", 4),
     ("(3 + 2) ^ (2 - 1)", 5),
+    ("3+-(2+4)", -3),
+    ("3+~-3", 6),
+    ("~-3!", 6),
+    ("-3!", -6),
+    ("2---3!", -4),
+    ("2 +--3!", 8),
+    ("3+-(-1)!", 4),
 
     # complex expressions
     ("12 + 34.5 - 56 + 78.2", 68.7),
@@ -46,10 +53,8 @@ from calculator import Calculator
     ("3 ----- 4 + ~10 & 20 & ~30 - 2.5", -33.5),
     ("4 ^ 3! - 10 + 15.5 $ 20.3 - 12#",  4103.3),
     ("(100 $ 50 $ 25) - (10 & 5 & 3) + ~20", 77),
-
-
 ])
-def test_valid_calculations(expression, expected_result):
+def test_valid_expressions(expression, expected_result):
     calc = Calculator()
     assert calc.calculate(expression) == expected_result
 
@@ -65,8 +70,16 @@ def test_valid_calculations(expression, expected_result):
     ("((3.5 + 2.2) * 4.1)! - 20", ValueError),
     ("", SyntaxError),
     ("          ", SyntaxError),
+    ("~--3!", ValueError),
+    ("--~--3", SyntaxError),
+    ("~--~-3", SyntaxError),
+    ("~~3", SyntaxError),
+    ("2 - - 3!", ValueError),
+
+
+
 ])
-def test_exception_for_invalid_expression(invalid_expression, expected_exception):
+def test_invalid_expression(invalid_expression, expected_exception):
     calc = Calculator()
     with pytest.raises(expected_exception):
         calc.calculate(invalid_expression)

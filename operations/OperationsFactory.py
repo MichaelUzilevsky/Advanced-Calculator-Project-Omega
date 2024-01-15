@@ -14,6 +14,10 @@ from operations.unary_operations.right_direction_of_operation.SumDigitsOperation
 
 
 class OperationsFactory:
+    """
+    This class represents the operations factory.
+    the class has a dictionary of the operation class, and their symbol
+    """
     operations = {
         '+': AdditionOperation(),
         '-': SubOperation(),
@@ -31,6 +35,14 @@ class OperationsFactory:
     }
 
     def get_operation(self, operator: str):
+        """
+        Returns the operation class associated with a given operator symbol.
+
+        :param operator: A string representing the operator symbol.
+        :return: An instance of the operation class associated with the given operator.
+        :raises ValueError: If the operator is not in the operations' dictionary.
+        """
+
         if operator in self.operations.keys():
             return self.operations.get(operator)
         else:
