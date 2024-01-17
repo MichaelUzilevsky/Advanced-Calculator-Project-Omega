@@ -8,7 +8,8 @@ class Evaluator:
     """
     this class's purpose is to evaluate a postfix expression
     """
-    def evaluate(self, postfix: list[str]) -> float:
+    @staticmethod
+    def evaluate(postfix: list[str]) -> float:
         """
         this function receives a postfix expression and returns its solution
         :param postfix: list[str] that represent valid postfix expression
@@ -36,5 +37,3 @@ class Evaluator:
                 solution_stack.append(result)
 
         return solution_stack.pop()
-
-

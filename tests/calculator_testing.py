@@ -53,6 +53,7 @@ from calculator import Calculator
     ("3 ----- 4 + ~10 & 20 & ~30 - 2.5", -33.5),
     ("4 ^ 3! - 10 + 15.5 $ 20.3 - 12#",  4103.3),
     ("(100 $ 50 $ 25) - (10 & 5 & 3) + ~20", 77),
+
 ])
 def test_valid_expressions(expression, expected_result):
     calc = Calculator()
@@ -75,8 +76,24 @@ def test_valid_expressions(expression, expected_result):
     ("~--~-3", SyntaxError),
     ("~~3", SyntaxError),
     ("2 - - 3!", ValueError),
-
-
+    ("!4", SyntaxError),
+    ("-", SyntaxError),
+    ("-~3", SyntaxError),
+    ("4**", SyntaxError),
+    ("()", SyntaxError),
+    (" ", SyntaxError),
+    ("(4))", SyntaxError),
+    ("4+-3!", ValueError),
+    ("4/0", ZeroDivisionError),
+    ("3..4", SyntaxError),
+    (".", SyntaxError),
+    ("", SyntaxError),
+    ("~~4", SyntaxError),
+    ("(4))", SyntaxError),
+    ("4+5-(3)(", SyntaxError),
+    ("4+5$", SyntaxError),
+    ("~4!", ValueError),
+    ("1!!!!2", SyntaxError),
 
 ])
 def test_invalid_expression(invalid_expression, expected_exception):
