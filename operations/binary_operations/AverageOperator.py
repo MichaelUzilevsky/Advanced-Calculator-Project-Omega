@@ -6,13 +6,12 @@ class AverageOperation(BinaryOperation):
     Represents an Average operation in a calculator.
     extents BinaryOperation
     """
-    def priority(self) -> int:
-        """
-        Returns the priority of the average operation.
-        """
-        return 5
+    AVERAGE_PRIORITY = 5
 
-    def perform(self, operand1: float, operand2: float) -> float:
+    def __init__(self):
+        super().__init__(priority=AverageOperation.AVERAGE_PRIORITY)
+
+    def execute(self, operand1: float, operand2: float) -> float:
         """
         Performs average on two operands.
         :param operand1: The first operand as a float.

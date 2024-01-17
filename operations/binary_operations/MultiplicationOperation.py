@@ -6,13 +6,12 @@ class MultiplicationOperation(BinaryOperation):
     Represents the multiplication operation in a calculator.
     extents BinaryOperation.
     """
-    def priority(self) -> int:
-        """
-        Returns the priority level of the multiplication operation.
-        """
-        return 2
+    MULTIPLICATION_PRIORITY = 2
 
-    def perform(self, operand1: float, operand2: float) -> float:
+    def __init__(self):
+        super().__init__(priority=MultiplicationOperation.MULTIPLICATION_PRIORITY)
+
+    def execute(self, operand1: float, operand2: float) -> float:
         """
         Determines the multiplication of two operands.
         :param operand1: The first operand as a float.

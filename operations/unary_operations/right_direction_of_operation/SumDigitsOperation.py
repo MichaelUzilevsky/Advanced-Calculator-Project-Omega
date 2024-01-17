@@ -1,16 +1,17 @@
-from operations.unary_operations.right_direction_of_operation.RightUnaryOperation import RightUnaryOperation
+from operations.unary_operations.UnaryOperation import UnaryOperation
 
 
-class SumDigitsOperation(RightUnaryOperation):
+class SumDigitsOperation(UnaryOperation):
     """
     Represents the operation that sums the digits of a number in a calculator.
     Extends RightUnaryOperation.
     """
-    def priority(self) -> int:
-        """
-        Returns the priority level of the sum digits operation.
-        """
-        return 6
+    SUM_DIGITS_PRIORITY = 6
+    SUM_DIGITS_PLACEMENT = "Right"
+
+    def __init__(self):
+        super().__init__(priority=SumDigitsOperation.SUM_DIGITS_PRIORITY,
+                         placement=SumDigitsOperation.SUM_DIGITS_PLACEMENT)
 
     @staticmethod
     def _remove_decimal_point(number: float) -> str:
@@ -24,7 +25,7 @@ class SumDigitsOperation(RightUnaryOperation):
         number_str = number_str.replace('.', '')
         return number_str
 
-    def perform(self, operand: float) -> int:
+    def execute(self, operand: float) -> int:
         """
         Sums the digits of the given operand.
         :param operand: The operand as a float.

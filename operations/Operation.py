@@ -5,13 +5,16 @@ class Operation:
     It requires subclasses to implement the priority and perform methods.
     """
 
-    def priority(self) -> int:
+    def __init__(self, priority: float):
+        self._priority = priority
+
+    def priority(self) -> float:
         """
         returns the priority level of the operation.
         """
-        pass
+        return self._priority
 
-    def preform(self, *operands: float) -> float:
+    def execute(self, *operands: float) -> float:
         """
         Performs the mathematical operation on the given operands.
         :param operands: Not fixed number of operands on which the operation will be performed.

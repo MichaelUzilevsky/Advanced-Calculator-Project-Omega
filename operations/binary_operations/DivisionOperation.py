@@ -6,14 +6,12 @@ class DivisionOperation(BinaryOperation):
     Represents a division operation in a calculator.
     extents BinaryOperation
     """
+    DIVISION_PRIORITY = 2
 
-    def priority(self) -> int:
-        """
-        Returns the priority of the division operation.
-        """
-        return 2
+    def __init__(self):
+        super().__init__(priority=DivisionOperation.DIVISION_PRIORITY)
 
-    def perform(self, operand1: float, operand2: float) -> float:
+    def execute(self, operand1: float, operand2: float) -> float:
         """
         Performs division on two operands.
         :param operand1: The first operand as a float.

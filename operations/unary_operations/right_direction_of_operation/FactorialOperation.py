@@ -1,29 +1,24 @@
-from operations.unary_operations.right_direction_of_operation.RightUnaryOperation import RightUnaryOperation
+from operations.unary_operations.UnaryOperation import UnaryOperation
 
 
-class FactorialOperation(RightUnaryOperation):
+class FactorialOperation(UnaryOperation):
     """
     Represents the factorial operation in a calculator.
     extends RightUnaryOperation.
     """
-    def priority(self) -> int:
-        """
-        Returns the priority level of the factorial operation.
-        """
-        return 6
+    FACTORIAL_PRIORITY = 6
+    FACTORIAL_PLACEMENT = "Right"
 
-    def perform(self, operand: int) -> int:
+    def __init__(self):
+        super().__init__(priority=FactorialOperation.FACTORIAL_PRIORITY,
+                         placement=FactorialOperation.FACTORIAL_PLACEMENT)
+
+    def execute(self, operand: int) -> int:
         """
         Calculates the factorial of the provided integer operand.
         :param operand: The operand as an integer.
         :return: The factorial of the operand.
         :raises ValueError: If the operand is not an integer or is less than 0.
-        """
-        """
-        returns the factorial of operand
-        :param operand: (int)
-        :return: operand!
-        :raise ValueError if operand is not valid for factorial operation
         """
         if int(operand) != operand or operand < 0:
             raise ValueError(f"{operand} must be an integer and non-negative to calculate factorial.")

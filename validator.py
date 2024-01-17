@@ -1,7 +1,5 @@
 from operations.binary_operations.BinaryOperation import BinaryOperation
 from operations.unary_operations.UnaryOperation import UnaryOperation
-from operations.unary_operations.left_direction_of_operation.LeftUnaryOperations import LeftUnaryOperation
-from operations.unary_operations.right_direction_of_operation.RightUnaryOperation import RightUnaryOperation
 from utills.utills_methods import is_float, is_open_parentheses, is_close_parentheses, is_parentheses, is_operator
 
 
@@ -126,20 +124,13 @@ class Validator:
                     self._is_left_unary_operator(input_list[i - 1]) or
                     is_open_parentheses(input_list[i - 1])):
 
-                if not is_float(input_list[i + minus_streak]) and (not input_list[i + minus_streak] == "("):
+                if (not is_float(input_list[i + minus_streak]) and
+                        (not is_open_parentheses(input_list[i + minus_streak]))):
                     raise SyntaxError(
                         f"Invalid Position of {input_list[i + minus_streak]} after the -\nin index {i + minus_streak}")
 
-                if input_list[i + minus_streak] == "(":
-                    if correct_operation == "-":
-                        minus_handled += "~"
-
-                else:
-                    if correct_operation == "-":
-                        minus_handled += [-float(input_list[i + minus_streak])]
-                    else:
-                        minus_handled += input_list[i + minus_streak]
-                    i += 1
+                if correct_operation == "-":
+                    minus_handled += ["--"]
 
                 i += minus_streak
 
@@ -152,10 +143,13 @@ class Validator:
         return isinstance(self.operations.get(op, None), UnaryOperation)
 
     def _is_right_unary_operator(self, op: str) -> bool:
-        return isinstance(self.operations.get(op, None), RightUnaryOperation)
+        return (isinstance(self.operations.get(op, None), UnaryOperation) and
+                self.operations.get(op).placement() == UnaryOperation.RIGHT)
 
     def _is_left_unary_operator(self, op: str) -> bool:
-        return isinstance(self.operations.get(op, None), LeftUnaryOperation)
+
+        return (isinstance(self.operations.get(op, None), UnaryOperation) and
+                self.operations.get(op).placement() == UnaryOperation.LEFT)
 
     @staticmethod
     def _is_minus_operation(op: str) -> bool:
@@ -233,7 +227,9 @@ class Validator:
                 if index == 0:
                     return False, input_list[index], index
 
-                if not is_float(input_list[index - 1]) and not (is_close_parentheses(input_list[index - 1])):
+                if (not is_float(input_list[index - 1]) and
+                        not (is_close_parentheses(input_list[index - 1])) and
+                        not (self._is_right_unary_operator(input_list[index - 1]))):
                     return False, input_list[index - 1], index - 1
 
                 if (not self._is_right_unary_operator(input_list[index + 1]) and

@@ -6,10 +6,11 @@ from operations.binary_operations.MinimumOperation import MinimumOperation
 from operations.binary_operations.ModuloOperation import ModuloOperation
 from operations.binary_operations.MultiplicationOperation import MultiplicationOperation
 from operations.binary_operations.PowerOperation import PowerOperation
-from operations.binary_operations.SubtractionOperation import SubOperation
+from operations.binary_operations.SubtractionOperation import SubtractionOperation
+from operations.unary_operations.left_direction_of_operation.SignMinusOperation import SignMinusOperation
 from operations.unary_operations.left_direction_of_operation.UnaryMinusOperation import UnaryMinusOperation
 from operations.unary_operations.right_direction_of_operation.FactorialOperation import FactorialOperation
-from operations.unary_operations.left_direction_of_operation.NegativeOperation import NegativeOperation
+from operations.unary_operations.left_direction_of_operation.TildeOperation import TildeOperation
 from operations.unary_operations.right_direction_of_operation.SumDigitsOperation import SumDigitsOperation
 
 
@@ -20,7 +21,7 @@ class OperationsFactory:
     """
     operations = {
         '+': AdditionOperation(),
-        '-': SubOperation(),
+        '-': SubtractionOperation(),
         '*': MultiplicationOperation(),
         '/': DivisionOperation(),
         '^': PowerOperation(),
@@ -29,9 +30,10 @@ class OperationsFactory:
         '@': AverageOperation(),
         '$': MaximumOperation(),
         '&': MinimumOperation(),
-        '~': NegativeOperation(),
+        '~': TildeOperation(),
         '!': FactorialOperation(),
         '#': SumDigitsOperation(),
+        '--': SignMinusOperation(),
     }
 
     def get_operation(self, operator: str):

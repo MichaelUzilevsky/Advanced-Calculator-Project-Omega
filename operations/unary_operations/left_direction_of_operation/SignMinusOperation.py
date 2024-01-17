@@ -1,19 +1,18 @@
 from operations.unary_operations.UnaryOperation import UnaryOperation
 
 
-class UnaryMinusOperation(UnaryOperation):
+class SignMinusOperation(UnaryOperation):
     """
     Represents the unary minus operation in a calculator.
-
-    extends LeftUnaryOperation. This is similar to NegativeOperation but his priority is not as high.
+    extends LeftUnaryOperation. This is similar to NegativeOperation but his priority is higher.
     """
 
-    UNARY_MINUS_PRIORITY = 2.5
-    UNARY_MINUS_PLACEMENT = "Left"
+    SIGN_MINUS_PRIORITY = 8
+    SIGN_MINUS_PLACEMENT = "Left"
 
     def __init__(self):
-        super().__init__(priority=UnaryMinusOperation.UNARY_MINUS_PRIORITY,
-                         placement=UnaryMinusOperation.UNARY_MINUS_PLACEMENT)
+        super().__init__(priority=SignMinusOperation.SIGN_MINUS_PRIORITY,
+                         placement=SignMinusOperation.SIGN_MINUS_PLACEMENT)
 
     def execute(self, operand: float) -> float:
         """
@@ -22,4 +21,3 @@ class UnaryMinusOperation(UnaryOperation):
         :return: the multiplication of the operand by -1.
         """
         return -operand
-

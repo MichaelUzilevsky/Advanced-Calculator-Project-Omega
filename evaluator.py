@@ -27,11 +27,11 @@ class Evaluator:
                 operation = factory.get_operation(item)
                 if isinstance(operation, UnaryOperation):
                     operand = solution_stack.pop()
-                    result = operation.perform(operand)
+                    result = operation.execute(operand)
                 elif isinstance(operation, BinaryOperation):
                     operand2 = solution_stack.pop()
                     operand1 = solution_stack.pop()
-                    result = operation.perform(operand1, operand2)
+                    result = operation.execute(operand1, operand2)
 
                 solution_stack.append(result)
 

@@ -21,6 +21,8 @@ def main():
 
     except KeyboardInterrupt:
         print("\nKeyboard interrupt received, exiting.")
+    except EOFError:
+        print("\nEOF, exiting.")
 
 
 if __name__ == '__main__':

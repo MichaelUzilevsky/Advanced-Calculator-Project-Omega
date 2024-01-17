@@ -6,13 +6,13 @@ class AdditionOperation(BinaryOperation):
     Represents an addition operation in a calculator.
     extents BinaryOperation
     """
-    def priority(self) -> int:
-        """
-        Returns the priority of the addition operation.
-        """
-        return 1
 
-    def perform(self, operand1: float, operand2: float) -> float:
+    ADDITION_PRIORITY = 1
+
+    def __init__(self):
+        super().__init__(priority=AdditionOperation.ADDITION_PRIORITY)
+
+    def execute(self, operand1: float, operand2: float) -> float:
         """
         Performs addition on two operands.
         :param operand1: The first operand as a float.
