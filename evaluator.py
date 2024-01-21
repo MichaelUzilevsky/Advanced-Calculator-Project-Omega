@@ -19,7 +19,7 @@ class Evaluator:
         """
         solution_stack = []
         factory = OperationsFactory()
-        result: float = 0
+        result = 0
 
         for item in postfix:
             if is_float(item):

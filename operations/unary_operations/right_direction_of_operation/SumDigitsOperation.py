@@ -30,16 +30,16 @@ class SumDigitsOperation(UnaryOperation):
         Sums the digits of the given operand.
         :param operand: The operand as a float.
         :return: The sum of the digits of the operand.
+        :raise ValueError if operand is negative
         """
-        negative = 1
         if operand < 0:
-            negative = -1
-            operand *= -1
+            raise ValueError("operand must be non-negative in order to sum its digits")
 
         number_str = self._remove_decimal_point(operand)
         sum_digits = 0
         for digit in number_str:
-            sum_digits += int(digit)
+            if digit.isdigit():
+                sum_digits += int(digit)
 
-        return sum_digits * negative
+        return sum_digits
 

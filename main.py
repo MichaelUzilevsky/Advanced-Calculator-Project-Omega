@@ -16,7 +16,7 @@ def main():
                 result = calculator.calculate(user_input)
                 print(f"Result: {result}\n")
 
-            except Exception as e:
+            except (SyntaxError, ValueError, ZeroDivisionError, OverflowError) as e:
                 print(f"Error: {e}")
 
     except KeyboardInterrupt:

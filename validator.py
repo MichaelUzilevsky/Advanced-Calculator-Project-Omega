@@ -145,7 +145,7 @@ class Validator:
         if (not is_open_parentheses(input_list[index + 1]) and
                 not is_float(input_list[index + 1]) and
                 not self._is_minus_operation(input_list[index + 1])):
-            raise SyntaxError(f"Invalid position of {input_list[index + 1]} after the minus in index {index}")
+            raise SyntaxError(f"Invalid position of {input_list[index + 1]} after the minus in index {index + 1}")
 
         return True
 
@@ -323,7 +323,8 @@ class Validator:
                     return False, input_list[index], index
 
                 # if before there isn't a binary operation
-                if not self._is_binary_operator(input_list[index - 1]):
+                if (not self._is_binary_operator(input_list[index - 1]) and
+                        not is_open_parentheses(input_list[index - 1])):
                     return False, input_list[index], index
 
                 # if after there isn't a number, (, or minus operation
