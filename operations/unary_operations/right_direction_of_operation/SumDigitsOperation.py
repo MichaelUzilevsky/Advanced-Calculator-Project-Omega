@@ -1,5 +1,4 @@
 from operations.unary_operations.UnaryOperation import UnaryOperation
-from termcolor import colored
 
 
 class SumDigitsOperation(UnaryOperation):
