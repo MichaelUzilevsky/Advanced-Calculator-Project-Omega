@@ -40,7 +40,7 @@ class SumDigitsOperation(UnaryOperation):
         if "e" in str(operand):
             print(f"\nThe number is represented in a Scientific Notation {operand}."
                   "\nThe Result may not be accurate\n")
-            number_str = number_str[0:number_str.index("e")]
+            number_str = number_str[0: number_str.index("e")]
 
         sum_digits = 0
         for digit in number_str:

@@ -22,8 +22,6 @@ class FactorialOperation(UnaryOperation):
         """
         if int(operand) != operand or operand < 0:
             raise ValueError(f"{operand} must be an integer and non-negative to calculate factorial.")
-        if 'e' in str(operand):
-            raise ValueError(f"the number is too large for evaluating its factorial {operand}")
         if operand == 0:
             return 1
         result: int = 1
