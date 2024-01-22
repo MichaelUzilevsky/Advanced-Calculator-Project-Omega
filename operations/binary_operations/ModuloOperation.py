@@ -18,4 +18,6 @@ class ModuloOperation(BinaryOperation):
         :param operand2: The second operand as a float.
         return: The reminder value of operand1 and operand2.
         """
-        return round(operand1 % operand2, 5)
+        if operand2 == 0:
+            raise ValueError("Unable to Modulo by zero.")
+        return operand1 % operand2

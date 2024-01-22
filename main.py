@@ -17,7 +17,7 @@ def main():
                 print(f"Result: {result}\n")
 
             except (SyntaxError, ValueError, ZeroDivisionError, OverflowError) as e:
-                print(f"Error: {e}")
+                print(f"Error: {e}\n")
 
     except KeyboardInterrupt:
         print("\nKeyboard interrupt received, exiting.")

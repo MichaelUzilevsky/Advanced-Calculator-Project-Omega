@@ -355,6 +355,20 @@ class Validator:
 
         return True, None, None
 
+    @staticmethod
+    def validate_large_numbers(extracted_list: list) -> None:
+        """
+        Validate that all the numbers are legal for working with, if number is too large (inf)
+        error id raised
+        :param extracted_list:
+        :raise:  Value error if the number is inf
+        """
+        for item in extracted_list:
+            if is_float(item):
+                x: list = [float(item)]
+                if x[0] == float('inf'):
+                    raise ValueError(f"Number is too large, {x[0]}")
+
     def validate(self, input_str: str) -> list[str]:
         """
         combines all the validation function above, if error occurs it is raised to the caller,
@@ -372,6 +386,8 @@ class Validator:
         # if not empty list
         if not extracted_input:
             raise SyntaxError("Empty Expression")
+
+        self.validate_large_numbers(extracted_input)
 
         # checks unary operations raises errors if needed
         valid, item, index = self._validate_unary_operators(extracted_input)

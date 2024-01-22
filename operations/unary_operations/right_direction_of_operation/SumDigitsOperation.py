@@ -1,4 +1,5 @@
 from operations.unary_operations.UnaryOperation import UnaryOperation
+from termcolor import colored
 
 
 class SumDigitsOperation(UnaryOperation):
@@ -25,7 +26,7 @@ class SumDigitsOperation(UnaryOperation):
         number_str = number_str.replace('.', '')
         return number_str
 
-    def execute(self, operand: float) -> int:
+    def execute(self, operand: float) -> float:
         """
         Sums the digits of the given operand.
         :param operand: The operand as a float.
@@ -36,10 +37,15 @@ class SumDigitsOperation(UnaryOperation):
             raise ValueError("operand must be non-negative in order to sum its digits")
 
         number_str = self._remove_decimal_point(operand)
+
+        if "e" in str(operand):
+            print(f"\nThe number is represented in a Scientific Notation {operand}."
+                  "\nThe Result may not be accurate\n")
+            number_str = number_str[0:number_str.index("e")]
+
         sum_digits = 0
         for digit in number_str:
             if digit.isdigit():
                 sum_digits += int(digit)
 
         return sum_digits
-

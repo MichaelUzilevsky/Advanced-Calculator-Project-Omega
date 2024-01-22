@@ -34,6 +34,6 @@ class Evaluator:
                     operand1 = solution_stack.pop()
                     result = operation.execute(operand1, operand2)
 
-                solution_stack.append(result)
+                solution_stack.append(round(result, 90))
 
         return solution_stack.pop()
